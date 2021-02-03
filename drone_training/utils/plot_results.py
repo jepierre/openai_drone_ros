@@ -6,6 +6,7 @@ print (np.__file__)
 print (np.__version__)
 import os
 import gym
+from gym import wrappers
 
 import matplotlib
 import matplotlib.pyplot as plt
@@ -40,7 +41,7 @@ class LivePlot(object):
         matplotlib.rcParams.update({'font.size': 15})
 
     def plot(self, full=True, dots=False, average=0, interpolated=0):
-        results = gym.monitoring.load_results(self.outdir)
+        results = gym.wrappers.monitor.load_results(self.outdir)
         data =  results[self.data_key]
         avg_data = []
 
