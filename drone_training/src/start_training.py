@@ -18,6 +18,7 @@ from functools import reduce
 import rospy
 import rospkg
 from std_msgs.msg import Int32
+from openai_drone_ros_msgs.msg import Reward
 
 # import our training environment
 import myquadcopter_env
@@ -25,7 +26,7 @@ import myquadcopter_env
 
 if __name__ == '__main__':
     
-    reward_publisher = rospy.Publisher("reward", Int32, queue_size=10)
+    reward_publisher = rospy.Publisher("reward", Reward, queue_size=10)
     rospy.init_node('drone_gym', anonymous=True)
 
     # Create the Gym environment
@@ -95,8 +96,7 @@ if __name__ == '__main__':
             # Make the algorithm learn based on the results
             qlearn.learn(state, action, reward, nextState)
 
-            # publish reward
-            reward_publisher.publish(reward)
+
 
             if not(done):
                 state = nextState
@@ -104,7 +104,12 @@ if __name__ == '__main__':
                 rospy.loginfo ("DONE")
                 last_time_steps = numpy.append(last_time_steps, [int(i + 1)])
                 break 
-
+        # publish reward
+        reward_msg = Reward()
+        reward_msg.episode_number = x
+        reward_msg.episode_reward = cumulated_reward
+        reward_publisher.publish(reward_msg)
+        
         m, s = divmod(int(time.time() - start_time), 60)
         h, m = divmod(m, 60)
         rospy.loginfo ( ("EP: "+str(x+1)+" - [alpha: "+str(round(qlearn.alpha,2))+" - gamma: "+str(round(qlearn.gamma,2))+" - epsilon: "+str(round(qlearn.epsilon,2))+"] - Reward: "+str(cumulated_reward)+"     Time: %d:%02d:%02d" % (h, m, s)))
