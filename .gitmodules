@@ -1,0 +1,3 @@
+[submodule "spawn_robot_tools"]
+	path = spawn_robot_tools
+	url = https://bitbucket.org/theconstructcore/spawn_robot_tools.git
