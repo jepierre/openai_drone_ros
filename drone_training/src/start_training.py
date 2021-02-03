@@ -76,7 +76,10 @@ if __name__ == '__main__':
         #env.render()
         
         # for each episode, we test the robot for nsteps
-        for i in range(nsteps):
+        # for i in range(nsteps):
+        i = 0
+        while not done:
+            i += 1
 
             # Pick an action based on the current state
             action = qlearn.chooseAction(state)
